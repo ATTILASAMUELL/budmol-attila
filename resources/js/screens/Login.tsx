@@ -1,34 +1,42 @@
-// resources/js/screens/Login.tsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import InputField from '../components/Form/InputField';
 import Button from '../components/Form/Button';
 import LoadingModal from '../components/Loading';
 
+import { useAppDispatch, useAppSelector } from '../hooks/hooks';
+import { loginThunk } from '../features/auth/authSlice';
+
 const Login: React.FC = () => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(false);
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
+
+  const { loading, isLoggedIn, error } = useAppSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate('/dashboard');
+    }
+  }, [isLoggedIn, navigate]);
+
+  useEffect(() => {
+    if (error) {
+      Swal.fire({
+        title: 'Erro!',
+        text: error,
+        icon: 'error',
+        confirmButtonText: 'Ok',
+        confirmButtonColor: '#F97316',
+      });
+    }
+  }, [error]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setLoading(true);
-    setTimeout(() => {
-      if (email === 'admin@example.com' && password === 'password') {
-        navigate('/dashboard');
-      } else {
-        Swal.fire({
-          title: 'Erro!',
-          text: 'Credenciais inválidas.',
-          icon: 'error',
-          confirmButtonText: 'Ok',
-          confirmButtonColor: '#F97316'
-        });
-      }
-      setLoading(false);
-    }, 2000);
+    dispatch(loginThunk({ email, password }));
   };
 
   return (
@@ -63,7 +71,6 @@ const Login: React.FC = () => {
             required
           />
 
-          {/* Lembrar e Esqueci a Senha */}
           <div className="flex items-center justify-between">
             <label className="inline-flex items-center text-sm text-gray-600">
               <input

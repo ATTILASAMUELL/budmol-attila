@@ -1,11 +1,14 @@
-// resources/js/screens/Dashboard.tsx
 import React, { useState } from 'react';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import Card from '../components/Card';
 import ModalForm from '../components/ModalForm';
+import { useAppSelector } from '../hooks/hooks';
+import { Role } from '../enums/Role';
 
 const Dashboard: React.FC = () => {
   const [isModalOpen, setModalOpen] = useState(false);
+  // Ajustado para buscar o usuário do slice "auth"
+  const user = useAppSelector((state) => state.auth.user);
 
   const cardsData = [
     { title: 'Evento 1', description: 'Short description #1.' },
@@ -22,12 +25,14 @@ const Dashboard: React.FC = () => {
     <DashboardLayout>
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold">Lista de Cards</h1>
-        <button
-          onClick={() => setModalOpen(true)}
-          className="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600 transition-colors"
-        >
-          Criar Evento
-        </button>
+        {user?.role === Role.ADMINISTRADOR && (
+          <button
+            onClick={() => setModalOpen(true)}
+            className="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600 transition-colors"
+          >
+            Criar Evento
+          </button>
+        )}
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-8 gap-0">
         {cardsData.map((item, index) => (
