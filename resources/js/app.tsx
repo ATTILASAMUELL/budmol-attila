@@ -7,6 +7,8 @@ import Login from './screens/Login';
 import Dashboard from './screens/Dashboard';
 import ForgotPassword from './screens/ForgotPassword';
 import Register from './screens/Register';
+import Help from './screens/Help';
+import Config from './screens/Config'; // Importa a screen Config
 import ProtectedRoute from './ProtectedRoute';
 
 const App: React.FC = () => {
@@ -22,6 +24,22 @@ const App: React.FC = () => {
             element={
               <ProtectedRoute>
                 <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/help-support"
+            element={
+              <ProtectedRoute>
+                <Help />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/config"
+            element={
+              <ProtectedRoute>
+                <Config />
               </ProtectedRoute>
             }
           />

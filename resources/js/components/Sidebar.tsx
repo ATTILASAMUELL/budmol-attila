@@ -84,7 +84,7 @@ const Sidebar: React.FC = () => {
             <ul className="space-y-1">
               <li>
                 <NavLink
-                  to="/help"
+                  to="/help-support"
                   className={({ isActive }) =>
                     `flex items-center px-4 py-2 text-sm rounded-md hover:bg-orange-600 hover:text-white ${
                       isActive ? 'bg-orange-600 text-white font-medium' : 'text-white'
@@ -97,7 +97,7 @@ const Sidebar: React.FC = () => {
               </li>
               <li>
                 <NavLink
-                  to="/settings"
+                  to="/config"
                   className={({ isActive }) =>
                     `flex items-center px-4 py-2 text-sm rounded-md hover:bg-orange-600 hover:text-white ${
                       isActive ? 'bg-orange-600 text-white font-medium' : 'text-white'
