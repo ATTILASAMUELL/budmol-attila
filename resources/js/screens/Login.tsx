@@ -23,6 +23,7 @@ const Login: React.FC = () => {
   }, [isLoggedIn, navigate]);
 
   useEffect(() => {
+    console.log(error);
     if (error) {
       Swal.fire({
         title: 'Erro!',
@@ -36,6 +37,19 @@ const Login: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    // Validação para garantir que a senha tenha pelo menos 6 caracteres
+    if (password.length < 6) {
+      Swal.fire({
+        title: 'Atenção!',
+        text: 'A senha precisa ter pelo menos 6 caracteres.',
+        icon: 'warning',
+        confirmButtonText: 'Ok',
+        confirmButtonColor: '#F97316',
+      });
+      return;
+    }
+
     dispatch(loginThunk({ email, password }));
   };
 

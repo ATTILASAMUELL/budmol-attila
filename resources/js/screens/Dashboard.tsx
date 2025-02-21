@@ -1,30 +1,49 @@
-import React, { useState } from 'react';
+// Dashboard.tsx
+import React, { useState, useEffect } from 'react';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import Card from '../components/Card';
-import ModalForm from '../components/ModalForm';
-import { useAppSelector } from '../hooks/hooks';
+import ModalForm, { EventFormData } from '../components/ModalForm';
+import { useAppSelector, useAppDispatch } from '../hooks/hooks';
 import { Role } from '../enums/Role';
+import { createEventThunk, listEventsThunk } from '../features/event/eventSlice';
+import Swal from 'sweetalert2';
 
 const Dashboard: React.FC = () => {
   const [isModalOpen, setModalOpen] = useState(false);
-  // Ajustado para buscar o usuário do slice "auth"
+  const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.auth.user);
+  const events = useAppSelector((state) => state.event?.events) || [];
+  const error = useAppSelector((state) => state.event?.error);
 
-  const cardsData = [
-    { title: 'Evento 1', description: 'Short description #1.' },
-    { title: 'Evento 2', description: 'Short description #2.' },
-    { title: 'Evento 3', description: 'Short description #3.' },
-  ];
+  useEffect(() => {
+    dispatch(listEventsThunk());
+  }, [dispatch]);
 
-  const handleModalSubmit = (data: any) => {
-    console.log('Evento criado:', data);
-    setModalOpen(false);
+  const handleModalSubmit = async (data: EventFormData) => {
+    try {
+      await dispatch(createEventThunk(data)).unwrap();
+      Swal.fire({
+        icon: 'success',
+        title: 'Evento criado com sucesso',
+        timer: 2000,
+        timerProgressBar: true,
+        showConfirmButton: false,
+      });
+      setModalOpen(false);
+      dispatch(listEventsThunk());
+    } catch (error: any) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Erro ao criar evento',
+        text: error.toString(),
+      });
+    }
   };
 
   return (
     <DashboardLayout>
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">Lista de Cards</h1>
+        <h1 className="text-2xl font-bold">Lista de Eventos</h1>
         {user?.role === Role.ADMINISTRADOR && (
           <button
             onClick={() => setModalOpen(true)}
@@ -34,12 +53,12 @@ const Dashboard: React.FC = () => {
           </button>
         )}
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-8 gap-0">
-        {cardsData.map((item, index) => (
-          <Card key={index} title={item.title} description={item.description} />
+      {error && <p className="text-red-500 mb-4">{error}</p>}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-8 gap-4">
+        {events.map((event) => (
+          <Card key={event.id} event={event} />
         ))}
       </div>
-
       <ModalForm
         isOpen={isModalOpen}
         onClose={() => setModalOpen(false)}

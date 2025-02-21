@@ -6,7 +6,7 @@ export interface User {
   id: string;
   name: string;
   email: string;
-  role: Role;
+  role: Role | string;
   accessToken: string;
   refreshToken: string;
 }
@@ -18,65 +18,83 @@ interface AuthState {
   error: string | null;
 }
 
+const storedUser = localStorage.getItem('user');
 const initialState: AuthState = {
-  user: null,
-  isLoggedIn: false,
+  user: storedUser ? JSON.parse(storedUser) : null,
+  isLoggedIn: storedUser ? true : false,
   loading: false,
   error: null,
 };
 
-// Thunk para login
 export const loginThunk = createAsyncThunk(
   'auth/login',
-  async (
-    credentials: { email: string; password: string },
-    { rejectWithValue }
-  ) => {
+  async (credentials: { email: string; password: string }, { rejectWithValue }) => {
     try {
-      const data = await authRepository.login(credentials);
-      return data; // Deve retornar o objeto de usuário com accessToken, refreshToken, role, etc.
+      const response = await authRepository.login(credentials);
+      const { success, message, data } = response;
+      if (!success) {
+        return rejectWithValue(message || 'Erro no login');
+      }
+      const { user, token } = data;
+      const mappedUser: User = {
+        id: '',
+        name: user.name,
+        email: user.email,
+        role: user.role === 'administrator' ? Role.ADMINISTRADOR : user.role,
+        accessToken: token,
+        refreshToken: token,
+      };
+      return mappedUser;
     } catch (error: any) {
-      return rejectWithValue(
-        error.response?.data?.message || 'Erro no login'
-      );
+      console.error('Erro no loginThunk:', error);
+      return rejectWithValue(error.response?.data?.message || 'Erro no login');
     }
   }
 );
 
-// Thunk para registro
 export const registerThunk = createAsyncThunk(
   'auth/register',
-  async (
-    credentials: { name: string; email: string; password: string },
-    { rejectWithValue }
-  ) => {
+  async (credentials: { name: string; email: string; password: string }, { rejectWithValue }) => {
     try {
-      const data = await authRepository.register(credentials);
-      return data;
+      const response = await authRepository.register(credentials);
+      const { success, message, data } = response;
+      if (!success) {
+        return rejectWithValue(message || 'Erro no registro');
+      }
+      const { user, token } = data;
+      const mappedUser: User = {
+        id: '',
+        name: user.name,
+        email: user.email,
+        role: user.role === 'administrator' ? Role.ADMINISTRADOR : user.role,
+        accessToken: token,
+        refreshToken: token,
+      };
+      return mappedUser;
     } catch (error: any) {
-      return rejectWithValue(
-        error.response?.data?.message || 'Erro no registro'
-      );
+      console.error('Erro no registerThunk:', error);
+      return rejectWithValue(error.response?.data?.message || 'Erro no registro');
     }
   }
 );
 
-// Thunk para recuperação de senha
 export const forgotPasswordThunk = createAsyncThunk(
   'auth/forgotPassword',
   async (email: string, { rejectWithValue }) => {
     try {
-      const data = await authRepository.forgotPassword(email);
-      return data;
+      const response = await authRepository.forgotPassword(email);
+      const { success, message } = response;
+      if (!success) {
+        return rejectWithValue(message || 'Erro ao recuperar senha');
+      }
+      return response;
     } catch (error: any) {
-      return rejectWithValue(
-        error.response?.data?.message || 'Erro ao recuperar senha'
-      );
+      console.error('Erro no forgotPasswordThunk:', error);
+      return rejectWithValue(error.response?.data?.message || 'Erro ao recuperar senha');
     }
   }
 );
 
-// Thunk para refresh token
 export const refreshTokenThunk = createAsyncThunk(
   'auth/refreshToken',
   async (_, { rejectWithValue, getState }) => {
@@ -84,12 +102,36 @@ export const refreshTokenThunk = createAsyncThunk(
       const state = getState() as { auth: AuthState };
       const refreshToken = state.auth.user?.refreshToken;
       if (!refreshToken) throw new Error('No refresh token available');
-      const data = await authRepository.refreshToken(refreshToken);
-      return data; // Ex: { accessToken, refreshToken }
+      const response = await authRepository.refreshToken(refreshToken);
+      const { success, message, data } = response;
+      if (!success) {
+        return rejectWithValue(message || 'Erro ao atualizar token');
+      }
+      const { accessToken, refreshToken: newRefreshToken } = data;
+      return { accessToken, refreshToken: newRefreshToken };
     } catch (error: any) {
-      return rejectWithValue(
-        error.response?.data?.message || 'Erro ao atualizar token'
-      );
+      console.error('Erro no refreshTokenThunk:', error);
+      return rejectWithValue(error.response?.data?.message || 'Erro ao atualizar token');
+    }
+  }
+);
+
+export const logoutThunk = createAsyncThunk(
+  'auth/logout',
+  async (_, { getState, dispatch, rejectWithValue }) => {
+    try {
+      const state = getState() as { auth: AuthState };
+      const refreshToken = state.auth.user?.refreshToken;
+      if (!refreshToken) throw new Error('Refresh token não encontrado');
+      const response = await authRepository.logout();
+      if (!response.success) {
+        return rejectWithValue(response.message || 'Erro ao realizar logout');
+      }
+      dispatch(logout());
+      return response;
+    } catch (error: any) {
+      console.error('Erro no logoutThunk:', error);
+      return rejectWithValue(error.response?.data?.message || 'Erro ao realizar logout');
     }
   }
 );
@@ -98,91 +140,95 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    // Logout é uma ação síncrona que limpa o estado
     logout: (state) => {
       state.user = null;
       state.isLoggedIn = false;
       state.error = null;
+      localStorage.removeItem('user');
+      localStorage.removeItem('token');
     },
   },
   extraReducers: (builder) => {
-    // Login
-    builder.addCase(loginThunk.pending, (state) => {
-      state.loading = true;
-      state.error = null;
-    });
-    builder.addCase(
-      loginThunk.fulfilled,
-      (state, action: PayloadAction<User>) => {
+    builder
+      .addCase(loginThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(loginThunk.fulfilled, (state, action: PayloadAction<User>) => {
         state.loading = false;
         state.isLoggedIn = true;
         state.user = action.payload;
         state.error = null;
-      }
-    );
-    builder.addCase(loginThunk.rejected, (state, action) => {
-      state.loading = false;
-      state.error = action.payload as string;
-      state.isLoggedIn = false;
-      state.user = null;
-    });
-
-    // Register
-    builder.addCase(registerThunk.pending, (state) => {
-      state.loading = true;
-      state.error = null;
-    });
-    builder.addCase(
-      registerThunk.fulfilled,
-      (state, action: PayloadAction<User>) => {
+        localStorage.setItem('token', action.payload.accessToken);
+        localStorage.setItem('user', JSON.stringify(action.payload));
+      })
+      .addCase(loginThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+        state.isLoggedIn = false;
+        state.user = null;
+      })
+      .addCase(registerThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(registerThunk.fulfilled, (state, action: PayloadAction<User>) => {
         state.loading = false;
         state.isLoggedIn = true;
         state.user = action.payload;
         state.error = null;
-      }
-    );
-    builder.addCase(registerThunk.rejected, (state, action) => {
-      state.loading = false;
-      state.error = action.payload as string;
-    });
-
-    // Forgot Password
-    builder.addCase(forgotPasswordThunk.pending, (state) => {
-      state.loading = true;
-      state.error = null;
-    });
-    builder.addCase(forgotPasswordThunk.fulfilled, (state) => {
-      state.loading = false;
-      state.error = null;
-    });
-    builder.addCase(forgotPasswordThunk.rejected, (state, action) => {
-      state.loading = false;
-      state.error = action.payload as string;
-    });
-
-    // Refresh Token
-    builder.addCase(refreshTokenThunk.pending, (state) => {
-      state.loading = true;
-      state.error = null;
-    });
-    builder.addCase(
-      refreshTokenThunk.fulfilled,
-      (
-        state,
-        action: PayloadAction<{ accessToken: string; refreshToken: string }>
-      ) => {
+        localStorage.setItem('token', action.payload.accessToken);
+        localStorage.setItem('user', JSON.stringify(action.payload));
+      })
+      .addCase(registerThunk.rejected, (state, action) => {
         state.loading = false;
-        if (state.user) {
-          state.user.accessToken = action.payload.accessToken;
-          state.user.refreshToken = action.payload.refreshToken;
+        state.error = action.payload as string;
+      })
+      .addCase(forgotPasswordThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(forgotPasswordThunk.fulfilled, (state) => {
+        state.loading = false;
+        state.error = null;
+      })
+      .addCase(forgotPasswordThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(refreshTokenThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        refreshTokenThunk.fulfilled,
+        (state, action: PayloadAction<{ accessToken: string; refreshToken: string }>) => {
+          state.loading = false;
+          if (state.user) {
+            state.user.accessToken = action.payload.accessToken;
+            state.user.refreshToken = action.payload.refreshToken;
+            localStorage.setItem('token', action.payload.accessToken);
+            localStorage.setItem('user', JSON.stringify(state.user));
+          }
+          state.error = null;
         }
+      )
+      .addCase(refreshTokenThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(logoutThunk.pending, (state) => {
+        state.loading = true;
         state.error = null;
-      }
-    );
-    builder.addCase(refreshTokenThunk.rejected, (state, action) => {
-      state.loading = false;
-      state.error = action.payload as string;
-    });
+      })
+      .addCase(logoutThunk.fulfilled, (state) => {
+        state.loading = false;
+        state.error = null;
+      })
+      .addCase(logoutThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      });
   },
 });
 

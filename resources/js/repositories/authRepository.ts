@@ -29,4 +29,8 @@ export const authRepository = {
       const response = await api.post(RoutesApi.REFRESH_TOKEN, { refreshToken });
       return response.data;
     },
+    logout: async () => {
+        const response = await api.post(RoutesApi.LOGOUT);
+        return response.data;
+    },
   };
