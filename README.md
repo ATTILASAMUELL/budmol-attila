@@ -15,7 +15,7 @@ Esta é a SPA e API BUDMOL, desenvolvida por **Attila Samuell Nunes Tabory** com
 ### Tecnologias e Ferramentas Utilizadas
 - **Back-end**: PHP 8.1.2, Laravel 10
 - **Autenticação**: Laravel Sanctum para autenticação baseada em tokens
-- **Front End**: React JS com Typescript e Redux.
+- **Front End**: React JS com Typescript,Redux,Tailwind CSS.
 
 ### Requisitos
 - **Composer e PHP**
@@ -54,9 +54,9 @@ Para instalar o projeto, siga os passos abaixo:
 ```
 
 3. **Gerar a chave de aplicação**:
-   ```bash
+```bash
    php artisan key:generate
-   ```
+```
 
 4. **Executar as migrações**:
 Lembre-se de criar database em algum client Mysql.
@@ -105,3 +105,9 @@ vendor/bin/phpunit --filter UserAuthControllerTest
 ### Email de verificação do email
 ![alt text](image-4.png)
 ![alt text](image-5.png)
+
+
+### Breve demonstração do sistema de eventos
+![alt text](image-6.png)
+
+![alt text](image-7.png)
