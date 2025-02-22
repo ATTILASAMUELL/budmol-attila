@@ -8,8 +8,14 @@ import Dashboard from './screens/Dashboard';
 import ForgotPassword from './screens/ForgotPassword';
 import Register from './screens/Register';
 import Help from './screens/Help';
-import Config from './screens/Config'; // Importa a screen Config
+import Config from './screens/Config';
 import ProtectedRoute from './ProtectedRoute';
+import { useAppSelector } from './hooks/hooks';
+
+const FallbackRoute: React.FC = () => {
+  const { user } = useAppSelector((state) => state.auth);
+  return <Navigate to={user ? "/dashboard" : "/login"} replace />;
+};
 
 const App: React.FC = () => {
   return (
@@ -43,7 +49,7 @@ const App: React.FC = () => {
               </ProtectedRoute>
             }
           />
-          <Route path="*" element={<Navigate to="/login" replace />} />
+          <Route path="*" element={<FallbackRoute />} />
         </Routes>
       </BrowserRouter>
     </Provider>

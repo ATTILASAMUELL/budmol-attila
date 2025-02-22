@@ -9,10 +9,11 @@ use Illuminate\Support\Str;
 use App\Notifications\VerifyEmailNotification;
 use Spatie\Permission\Traits\HasRoles;
 use Laravel\Sanctum\HasApiTokens;
+use App\Models\Event;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable,HasRoles;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
     protected $fillable = [
         'name',
@@ -31,7 +32,6 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-
     public function generateVerificationToken(): void
     {
         $this->verification_token = Str::random(40);
@@ -41,9 +41,12 @@ class User extends Authenticatable
     public function sendEmailVerificationNotification(): void
     {
         $this->generateVerificationToken();
-
         $verificationUrl = url("/email/verify/{$this->id}?token={$this->verification_token}");
-
         $this->notify(new VerifyEmailNotification($verificationUrl));
+    }
+
+    public function events()
+    {
+        return $this->belongsToMany(Event::class, 'event_registrations', 'user_id', 'event_id');
     }
 }

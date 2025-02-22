@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
 
 class UserRepository
 {
@@ -16,7 +17,6 @@ class UserRepository
         return User::where('email', $email)->first();
     }
 
-
     public function markEmailAsVerified(int $id, string $token): ?User
     {
         $user = User::find($id);
@@ -28,5 +28,10 @@ class UserRepository
             return $user;
         }
         return null;
+    }
+
+    public function getUsersWithEvents(): Collection
+    {
+        return User::has('events')->with('events')->get();
     }
 }
