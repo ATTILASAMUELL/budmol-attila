@@ -3,7 +3,7 @@ import { useAppSelector, useAppDispatch } from '../hooks/hooks';
 import { Role } from '../enums/Role';
 import { Event } from '../models/Event';
 import { createEventRegistrationThunk } from '../features/event/eventRegistrationSlice';
-import { updateEventThunk, deleteEventThunk } from '../features/event/eventSlice'; // Importa a thunk de atualização e exclusão
+import { updateEventThunk, deleteEventThunk } from '../features/event/eventSlice';
 import Swal from 'sweetalert2';
 import ModalForm, { EventFormData } from './ModalForm';
 
@@ -83,7 +83,7 @@ const Card: React.FC<CardProps> = ({ event }) => {
 
     if (confirmResult.isConfirmed) {
       try {
-        await dispatch(deleteEventThunk(String(event.id))).unwrap();
+        await dispatch(deleteEventThunk(event.id)).unwrap();
         Swal.fire({
           icon: 'success',
           title: 'Evento excluído com sucesso',

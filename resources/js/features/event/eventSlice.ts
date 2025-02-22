@@ -33,7 +33,7 @@ export const createEventThunk = createAsyncThunk(
 export const updateEventThunk = createAsyncThunk(
   'event/update',
   async (
-    { eventId, eventData }: { eventId: string; eventData: Partial<Event> },
+    { eventId, eventData }: { eventId: number; eventData: Partial<Event> },
     { rejectWithValue }
   ) => {
     try {
@@ -58,7 +58,6 @@ export const listEventsThunk = createAsyncThunk(
       if (!success) {
         return rejectWithValue(message || 'Erro ao listar eventos');
       }
-      // Se data já for um array, retorne-o; caso contrário, retorne data.events
       return Array.isArray(data) ? data : data.events;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Erro ao listar eventos');
@@ -68,7 +67,7 @@ export const listEventsThunk = createAsyncThunk(
 
 export const deleteEventThunk = createAsyncThunk(
   'event/delete',
-  async (eventId: string, { rejectWithValue }) => {
+  async (eventId: number, { rejectWithValue }) => {
     try {
       const response = await eventRepository.delete(eventId);
       const { success, message } = response;
@@ -95,10 +94,6 @@ const eventSlice = createSlice({
       })
       .addCase(createEventThunk.fulfilled, (state, action: PayloadAction<Event>) => {
         state.loading = false;
-        // Garante que state.events existe antes de usar push
-        if (!state.events) {
-          state.events = [];
-        }
         state.events.push(action.payload);
         state.error = null;
       })
@@ -144,7 +139,7 @@ const eventSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(deleteEventThunk.fulfilled, (state, action: PayloadAction<string>) => {
+      .addCase(deleteEventThunk.fulfilled, (state, action: PayloadAction<number>) => {
         state.loading = false;
         state.events = state.events.filter((event) => event.id !== action.payload);
         state.error = null;
