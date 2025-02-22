@@ -10,7 +10,7 @@ class EventResource extends JsonResource
     {
         return [
             'id'           => $this->id,
-            'image' => asset('wallpeper-events.png'),
+            'image'        => asset('wallpeper-events.png'),
             'title'        => $this->title,
             'description'  => $this->description,
             'start_time'   => $this->start_time,
@@ -18,6 +18,9 @@ class EventResource extends JsonResource
             'location'     => $this->location,
             'max_capacity' => $this->max_capacity,
             'status'       => $this->status->value,
+            'registered'   => auth()->check()
+                                ? $this->registrations()->where('user_id', auth()->id())->exists()
+                                : false,
             'created_at'   => $this->created_at,
             'updated_at'   => $this->updated_at,
         ];

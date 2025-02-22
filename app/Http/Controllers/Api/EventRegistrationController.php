@@ -39,8 +39,9 @@ class EventRegistrationController extends Controller
     public function store(StoreEventRegistrationRequest $request): JsonResponse
     {
         try {
-            Gate::authorize('create', EventRegistration::class);
             $data = $request->validated();
+            $user_id = $request->user()->id;
+            $data['user_id'] = $user_id;
             $registration = $this->eventRegistrationService->create($data);
             return $this->successResponse(
                 new EventRegistrationResource($registration),

@@ -10,13 +10,14 @@ class ValidEventRegistration implements Rule
     public function passes($attribute, $value)
     {
         $event = Event::find($value);
+
         if (!$event) {
             return false;
         }
         if ($event->registrations()->count() >= $event->max_capacity) {
             return false;
         }
-        if ($event->status !== 'open') {
+        if ($event->status->value !== 'open') {
             return false;
         }
         return true;

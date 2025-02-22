@@ -7,5 +7,6 @@ export const RoutesApi = {
     EVENT_CREATE: '/events',
     EVENT_UPDATE: '/events',
     EVENT_LIST: '/events',
-    EVENT_DELETE: '/events'
+    EVENT_DELETE: '/events',
+    EVENT_REGISTRATION: '/event-registrations'
   };

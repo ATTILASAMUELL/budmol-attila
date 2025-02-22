@@ -15,7 +15,6 @@ class StoreEventRegistrationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id'  => ['required', 'exists:users,id'],
             'event_id' => ['required', 'exists:events,id', new ValidEventRegistration],
         ];
     }
@@ -23,8 +22,6 @@ class StoreEventRegistrationRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'user_id.required'  => 'O campo usuário é obrigatório.',
-            'user_id.exists'    => 'O usuário selecionado não existe.',
             'event_id.required' => 'O campo evento é obrigatório.',
             'event_id.exists'   => 'O evento selecionado não existe.',
         ];

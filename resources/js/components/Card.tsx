@@ -1,7 +1,9 @@
-import React from 'react';
-import { useAppSelector } from '../hooks/hooks';
+import React, { useState, useEffect } from 'react';
+import { useAppSelector, useAppDispatch } from '../hooks/hooks';
 import { Role } from '../enums/Role';
 import { Event } from '../models/Event';
+import { createEventRegistrationThunk } from '../features/event/eventRegistrationSlice';
+import Swal from 'sweetalert2';
 
 interface CardProps {
   event: Event;
@@ -9,16 +11,51 @@ interface CardProps {
 
 const Card: React.FC<CardProps> = ({ event }) => {
   const user = useAppSelector((state) => state.auth.user);
+  const dispatch = useAppDispatch();
 
-  // Cria os objetos Date a partir das strings
+  const [isRegistered, setIsRegistered] = useState(event.registered);
+
+  useEffect(() => {
+    setIsRegistered(event.registered);
+  }, [event.registered]);
+
   const startDate = new Date(event.start_time);
   const endDate = new Date(event.end_time);
 
-  // Formata a data (dd/mm/aaaa) e a hora (HH:mm)
   const formattedStartDate = startDate.toLocaleDateString('pt-BR');
   const formattedStartTime = startDate.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
   const formattedEndDate = endDate.toLocaleDateString('pt-BR');
   const formattedEndTime = endDate.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+  const handleRegister = async () => {
+    if (!user) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Erro',
+        text: 'Você precisa estar logado para se inscrever.',
+        confirmButtonColor: '#f97316',
+      });
+      return;
+    }
+
+    try {
+      await dispatch(createEventRegistrationThunk({ user_id: user.id, event_id: event.id })).unwrap();
+      setIsRegistered(true);
+      Swal.fire({
+        icon: 'success',
+        title: 'Inscrição realizada',
+        text: 'Você se inscreveu com sucesso neste evento.',
+        confirmButtonColor: '#f97316',
+      });
+    } catch (error: any) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Erro',
+        text: error || 'Não foi possível realizar a inscrição.',
+        confirmButtonColor: '#f97316',
+      });
+    }
+  };
 
   return (
     <div className="bg-white border border-orange-500 rounded-lg shadow p-3 w-full max-w-xs">
@@ -60,15 +97,23 @@ const Card: React.FC<CardProps> = ({ event }) => {
       <p className="text-sm text-gray-500 mb-3">
         <strong>Status:</strong> {event.status}
       </p>
+
       {user?.role === Role.ADMINISTRADOR ? (
         <button className="bg-orange-500 text-white py-1 px-3 rounded hover:bg-orange-600 transition-colors text-sm">
           Edição
         </button>
-      ) : (
-        <button className="bg-orange-500 text-white py-1 px-3 rounded hover:bg-orange-600 transition-colors text-sm">
+      ) : isRegistered ? (
+        <span className="bg-green-500 text-white py-1 px-3 rounded text-sm">
+          Já Inscrito
+        </span>
+      ) : event.status === 'open' ? (
+        <button
+          onClick={handleRegister}
+          className="bg-orange-500 text-white py-1 px-3 rounded hover:bg-orange-600 transition-colors text-sm"
+        >
           Se Inscrever
         </button>
-      )}
+      ) : null}
     </div>
   );
 };

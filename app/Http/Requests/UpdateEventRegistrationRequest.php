@@ -15,7 +15,6 @@ class UpdateEventRegistrationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id'  => ['sometimes', 'exists:users,id'],
             'event_id' => ['sometimes', 'exists:events,id', new ValidEventRegistration],
         ];
     }
@@ -23,7 +22,6 @@ class UpdateEventRegistrationRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'user_id.exists'  => 'O usuário selecionado não existe.',
             'event_id.exists' => 'O evento selecionado não existe.',
         ];
     }
