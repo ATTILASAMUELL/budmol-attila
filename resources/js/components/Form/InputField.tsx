@@ -2,6 +2,7 @@ import React from 'react';
 
 interface InputFieldProps {
   label: string;
+  labelColor?: string;
   type: string;
   value: string | number;
   onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
@@ -13,6 +14,7 @@ interface InputFieldProps {
 
 const InputField: React.FC<InputFieldProps> = ({
   label,
+  labelColor = 'text-white',
   type,
   value,
   onChange,
@@ -23,7 +25,9 @@ const InputField: React.FC<InputFieldProps> = ({
 }) => {
   return (
     <div className="mb-4">
-      <label className="block text-white font-semibold mb-1">{label}</label>
+      <label className={`block font-semibold mb-1 ${labelColor}`}>
+        {label}
+      </label>
       {multiline ? (
         <textarea
           value={value as string}

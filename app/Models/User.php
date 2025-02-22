@@ -7,6 +7,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 use App\Notifications\VerifyEmailNotification;
+use App\Notifications\ForgotPasswordNotification;
 use Spatie\Permission\Traits\HasRoles;
 use Laravel\Sanctum\HasApiTokens;
 use App\Models\Event;
@@ -43,6 +44,11 @@ class User extends Authenticatable
         $this->generateVerificationToken();
         $verificationUrl = url("/email/verify/{$this->id}?token={$this->verification_token}");
         $this->notify(new VerifyEmailNotification($verificationUrl));
+    }
+
+    public function sendForgotPasswordNotification($temporaryPassword): void
+    {
+        $this->notify(new ForgotPasswordNotification($temporaryPassword));
     }
 
     public function events()

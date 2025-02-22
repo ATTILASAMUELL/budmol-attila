@@ -1,24 +1,46 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 import InputField from '../components/Form/InputField';
 import Button from '../components/Form/Button';
 import LoadingModal from '../components/Loading';
+import { useAppDispatch, useAppSelector } from '../hooks/hooks';
+import { forgotPasswordThunk } from '../features/auth/authSlice';
 
 const ForgotPassword: React.FC = () => {
   const [email, setEmail] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [localLoading, setLocalLoading] = useState(false);
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const { loading } = useAppSelector((state) => state.auth);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
-    setTimeout(() => {
-      alert(`Password recovery instructions sent to ${email}`);
-      navigate('/login');
-    }, 1000);
+    setLocalLoading(true);
+    try {
+      await dispatch(forgotPasswordThunk(email)).unwrap();
+      Swal.fire({
+        icon: 'success',
+        title: 'Sucesso',
+        text: `Instruções para recuperação de senha enviadas para ${email}`,
+        confirmButtonColor: '#F97316',
+      }).then(() => {
+        navigate('/login');
+      });
+    } catch (error: any) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Erro',
+        text: error || 'Ocorreu um erro ao recuperar a senha.',
+        confirmButtonColor: '#F97316',
+      });
+    } finally {
+      setLocalLoading(false);
+    }
   };
 
-  if (isLoading) {
+  if (loading || localLoading) {
     return <LoadingModal />;
   }
 
@@ -30,13 +52,14 @@ const ForgotPassword: React.FC = () => {
             <span className="text-white text-2xl font-bold">B</span>
           </div>
           <h1 className="text-2xl font-bold text-gray-700">Budmol</h1>
-          <p className="text-gray-500">Technology & Design</p>
+          <p className="text-gray-700">Tecnologia &amp; Design</p>
         </div>
 
         <h2 className="text-2xl font-bold text-gray-700 mb-4">Recuperar Senha</h2>
         <form onSubmit={handleSubmit} className="space-y-5">
           <InputField
             label="Email"
+            labelColor="text-gray-700"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -53,7 +76,10 @@ const ForgotPassword: React.FC = () => {
           </Button>
         </form>
         <div className="text-center mt-6">
-          <a href="/login" className="text-sm text-orange-500 hover:underline font-medium">
+          <a
+            href="/login"
+            className="text-sm text-orange-500 hover:underline font-medium"
+          >
             Voltar ao Login
           </a>
         </div>

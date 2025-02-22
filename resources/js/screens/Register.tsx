@@ -1,28 +1,52 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAppDispatch } from '../hooks/hooks';
 import InputField from '../components/Form/InputField';
 import Button from '../components/Form/Button';
 import LoadingModal from '../components/Loading';
+import { registerThunk } from '../features/auth/authSlice';
+import Swal from 'sweetalert2';
 
 const Register: React.FC = () => {
-  const [nome, setNome] = useState('');
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [senha, setSenha] = useState('');
-  const [confirmSenha, setConfirmSenha] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (senha !== confirmSenha) {
-      alert('As senhas não correspondem!');
+    if (password !== confirmPassword) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Erro',
+        text: 'As senhas não coincidem!',
+        confirmButtonColor: '#f97316',
+      });
       return;
     }
     setIsLoading(true);
-    setTimeout(() => {
-      alert(`Usuário ${nome} cadastrado com sucesso!`);
-      navigate('/login');
-    }, 1000);
+    try {
+      await dispatch(registerThunk({ name, email, password })).unwrap();
+      Swal.fire({
+        icon: 'success',
+        title: 'Sucesso',
+        text: `Usuário ${name} cadastrado com sucesso!`,
+        confirmButtonColor: '#f97316',
+      }).then(() => {
+        navigate('/login');
+      });
+    } catch (error: any) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Erro',
+        text: error || 'Ocorreu um erro durante o cadastro.',
+        confirmButtonColor: '#f97316',
+      });
+      setIsLoading(false);
+    }
   };
 
   if (isLoading) {
@@ -37,42 +61,50 @@ const Register: React.FC = () => {
             <span className="text-white text-2xl font-bold">B</span>
           </div>
           <h1 className="text-2xl font-bold text-gray-700">Budmol</h1>
-          <p className="text-gray-500">Technology & Design</p>
+          <p className="text-gray-500">Tecnologia &amp; Design</p>
         </div>
 
         <h2 className="text-2xl font-bold text-gray-700 mb-4">Cadastro</h2>
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-3">
           <InputField
             label="Nome"
+            labelColor="text-gray-700"
             type="text"
-            value={nome}
-            onChange={(e) => setNome(e.target.value)}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
             placeholder="Digite seu nome"
             required
+            className="h-10"
           />
           <InputField
             label="Email"
+            labelColor="text-gray-700"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Digite seu email"
             required
+            className="h-10"
           />
           <InputField
             label="Senha"
+            labelColor="text-gray-700"
             type="password"
-            value={senha}
-            onChange={(e) => setSenha(e.target.value)}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             placeholder="Digite sua senha"
             required
+            className="h-10"
           />
           <InputField
             label="Confirmar Senha"
+            labelColor="text-gray-700"
             type="password"
-            value={confirmSenha}
-            onChange={(e) => setConfirmSenha(e.target.value)}
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
             placeholder="Confirme sua senha"
             required
+            className="h-10"
           />
           <Button
             type="submit"
@@ -84,7 +116,10 @@ const Register: React.FC = () => {
           </Button>
         </form>
         <div className="text-center mt-6">
-          <a href="/login" className="text-sm text-orange-500 hover:underline font-medium">
+          <a
+            href="/login"
+            className="text-sm text-orange-500 hover:underline font-medium"
+          >
             Já possui uma conta? Faça login
           </a>
         </div>

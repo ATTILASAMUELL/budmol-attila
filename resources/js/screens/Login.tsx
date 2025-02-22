@@ -23,7 +23,6 @@ const Login: React.FC = () => {
   }, [isLoggedIn, navigate]);
 
   useEffect(() => {
-    console.log(error);
     if (error) {
       Swal.fire({
         title: 'Erro!',
@@ -38,7 +37,6 @@ const Login: React.FC = () => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // Validação para garantir que a senha tenha pelo menos 6 caracteres
     if (password.length < 6) {
       Swal.fire({
         title: 'Atenção!',
@@ -63,12 +61,13 @@ const Login: React.FC = () => {
             <span className="text-white text-2xl font-bold">B</span>
           </div>
           <h1 className="text-2xl font-bold text-gray-700">Budmol</h1>
-          <p className="text-gray-500">Technology & Design</p>
+          <p className="text-gray-700">Tecnologia &amp; Design</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <InputField
             label="Login"
+            labelColor="text-gray-700"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -78,6 +77,7 @@ const Login: React.FC = () => {
 
           <InputField
             label="Senha"
+            labelColor="text-gray-700"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -86,7 +86,7 @@ const Login: React.FC = () => {
           />
 
           <div className="flex items-center justify-between">
-            <label className="inline-flex items-center text-sm text-gray-600">
+            <label className="inline-flex items-center text-sm text-gray-700">
               <input
                 type="checkbox"
                 className="form-checkbox h-4 w-4 text-orange-500 accent-orange-500"
@@ -108,9 +108,8 @@ const Login: React.FC = () => {
           </Button>
         </form>
 
-        {/* Rodapé */}
         <div className="text-center mt-6">
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-gray-700">
             Novo no Budmol?{' '}
             <Link to="/register" className="text-orange-500 hover:underline font-medium">
               Inscreva-se aqui

@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use App\Http\Resources\UserResource;
 use App\Traits\JsonResponseTrait;
+use App\Http\Requests\ForgotPasswordRequest;
 
 class UserAuthController extends Controller
 {
@@ -102,4 +103,18 @@ class UserAuthController extends Controller
             return $this->errorResponse('An error occurred', 500);
         }
     }
+
+    public function forgotPassword(ForgotPasswordRequest $request): JsonResponse
+    {
+        try {
+            $result = $this->userAuthService->forgotPassword($request->validated()['email']);
+            if (!$result) {
+                return $this->errorResponse('User not found', 404);
+            }
+            return $this->successResponse([], 'Temporary password sent to your email.');
+        } catch (\Exception $e) {
+            return $this->errorResponse('An error occurred', 500);
+        }
+    }
+
 }

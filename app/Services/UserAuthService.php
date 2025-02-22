@@ -6,7 +6,8 @@ use App\Repositories\UserRepository;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use App\Models\User;
-use App\Notifications\VerifyEmailNotification;
+use Illuminate\Support\Str;
+
 
 class UserAuthService
 {
@@ -62,5 +63,18 @@ class UserAuthService
     {
         $user = $this->userRepository->markEmailAsVerified($id, $token);
         return $user !== null;
+    }
+
+    public function forgotPassword(string $email): bool
+    {
+        $user = $this->userRepository->findByEmail($email);
+        if (!$user) {
+            return false;
+        }
+        $temporaryPassword = Str::random(8);
+        $user->password = Hash::make($temporaryPassword);
+        $user->save();
+        $user->sendForgotPasswordNotification($temporaryPassword);
+        return true;
     }
 }
