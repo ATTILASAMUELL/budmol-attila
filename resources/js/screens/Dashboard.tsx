@@ -1,4 +1,3 @@
-// Dashboard.tsx
 import React, { useState, useEffect } from 'react';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import Card from '../components/Card';
@@ -54,11 +53,16 @@ const Dashboard: React.FC = () => {
         )}
       </div>
       {error && <p className="text-red-500 mb-4">{error}</p>}
+
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-8 gap-4">
-        {events.map((event) => (
-          <Card key={event.id} event={event} />
-        ))}
+        {/* Filtra itens indefinidos, se houver */}
+        {events
+          .filter((event) => event)
+          .map((event) => (
+            <Card key={event.id} event={event} />
+          ))}
       </div>
+
       <ModalForm
         isOpen={isModalOpen}
         onClose={() => setModalOpen(false)}

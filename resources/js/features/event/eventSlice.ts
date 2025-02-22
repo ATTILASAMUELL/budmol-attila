@@ -30,7 +30,6 @@ export const createEventThunk = createAsyncThunk(
   }
 );
 
-// Ajuste na thunk de atualização para retornar data corretamente
 export const updateEventThunk = createAsyncThunk(
   'event/update',
   async (
@@ -43,7 +42,6 @@ export const updateEventThunk = createAsyncThunk(
       if (!success) {
         return rejectWithValue(message || 'Erro ao atualizar evento');
       }
-      // Retorna o objeto do evento conforme retornado pelo back-end (data é o objeto do evento)
       return data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Erro ao atualizar evento');
@@ -60,7 +58,8 @@ export const listEventsThunk = createAsyncThunk(
       if (!success) {
         return rejectWithValue(message || 'Erro ao listar eventos');
       }
-      return data;
+      // Se data já for um array, retorne-o; caso contrário, retorne data.events
+      return Array.isArray(data) ? data : data.events;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Erro ao listar eventos');
     }
@@ -96,6 +95,10 @@ const eventSlice = createSlice({
       })
       .addCase(createEventThunk.fulfilled, (state, action: PayloadAction<Event>) => {
         state.loading = false;
+        // Garante que state.events existe antes de usar push
+        if (!state.events) {
+          state.events = [];
+        }
         state.events.push(action.payload);
         state.error = null;
       })
@@ -103,6 +106,7 @@ const eventSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
+
       // Update
       .addCase(updateEventThunk.pending, (state) => {
         state.loading = true;
@@ -119,6 +123,7 @@ const eventSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
+
       // List
       .addCase(listEventsThunk.pending, (state) => {
         state.loading = true;
@@ -133,6 +138,7 @@ const eventSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
+
       // Delete
       .addCase(deleteEventThunk.pending, (state) => {
         state.loading = true;

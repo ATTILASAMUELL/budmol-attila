@@ -166,7 +166,6 @@ const ModalForm: React.FC<ModalFormProps> = ({ isOpen, onClose, onSubmit, initia
                 setMax_capacity(value < 1 ? 1 : value);
               }}
               required
-              // Caso o InputField aceite props extras, pode ser passado min={1}
             />
             <SelectField
               label="Status"
