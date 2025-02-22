@@ -25,6 +25,7 @@ class RegisterRequest extends FormRequest
         return [
             'name.required' => 'O campo nome é obrigatório.',
             'email.required' => 'O campo email é obrigatório.',
+            'email.unique' => 'Tente Novamente mais tarde.',
             'password.confirmed' => 'As senhas não conferem.',
         ];
     }
