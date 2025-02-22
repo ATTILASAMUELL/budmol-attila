@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import Swal from 'sweetalert2';
 import InputField from './Form/InputField';
 import SelectField from './Form/SelectField';
 import Button from './Form/Button';
@@ -11,21 +12,47 @@ interface ModalFormProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (data: EventFormData) => Promise<void>;
+  initialData?: EventFormData;
 }
 
-const ModalForm: React.FC<ModalFormProps> = ({ isOpen, onClose, onSubmit }) => {
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
+const ModalForm: React.FC<ModalFormProps> = ({ isOpen, onClose, onSubmit, initialData }) => {
+  // Inicializa a capacidade com 1 se não houver valor inicial ou se for menor que 1
+  const initialCapacity = initialData && initialData.max_capacity > 0 ? initialData.max_capacity : 1;
+
+  const [title, setTitle] = useState(initialData?.title || '');
+  const [description, setDescription] = useState(initialData?.description || '');
+  // Os inputs datetime-local precisam do formato "YYYY-MM-DDTHH:mm"
   const [start_time, setStart_time] = useState('');
   const [end_time, setEnd_time] = useState('');
-  const [location, setLocation] = useState('');
-  const [max_capacity, setMax_capacity] = useState<number>(0);
-  const [status, setStatus] = useState<EventStatus>(EventStatus.OPEN);
+  const [location, setLocation] = useState(initialData?.location || '');
+  const [max_capacity, setMax_capacity] = useState<number>(initialCapacity);
+  const [status, setStatus] = useState<EventStatus>(initialData?.status || EventStatus.OPEN);
   const [loading, setLoading] = useState(false);
 
-  // Converte o valor retornado do input datetime-local para o formato "YYYY-MM-DD HH:mm:ss"
+  // Função para converter "YYYY-MM-DD HH:mm:ss" para "YYYY-MM-DDTHH:mm"
+  const convertToInputFormat = (datetime: string) => {
+    if (!datetime) return '';
+    // Exemplo: "2025-02-22 15:30:00" -> "2025-02-22T15:30"
+    return datetime.replace(' ', 'T').slice(0, 16);
+  };
+
+  // Quando houver dados iniciais, converte os campos de data para o formato do input
+  useEffect(() => {
+    if (initialData) {
+      setTitle(initialData.title);
+      setDescription(initialData.description);
+      setStart_time(convertToInputFormat(initialData.start_time));
+      setEnd_time(convertToInputFormat(initialData.end_time));
+      setLocation(initialData.location);
+      setMax_capacity(initialData.max_capacity > 0 ? initialData.max_capacity : 1);
+      setStatus(initialData.status);
+    }
+  }, [initialData]);
+
+  // Função para formatar o valor do input para "YYYY-MM-DD HH:mm:ss"
   const formatDatetime = (datetime: string) => {
     if (!datetime) return '';
+    // Transforma "YYYY-MM-DDTHH:mm" em "YYYY-MM-DD HH:mm:00"
     return datetime.replace('T', ' ') + ':00';
   };
 
@@ -33,6 +60,29 @@ const ModalForm: React.FC<ModalFormProps> = ({ isOpen, onClose, onSubmit }) => {
     e.preventDefault();
     const formattedStart = formatDatetime(start_time);
     const formattedEnd = formatDatetime(end_time);
+
+    // Validação: end_time deve ser posterior a start_time
+    if (new Date(formattedEnd) <= new Date(formattedStart)) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Erro de data',
+        text: 'A data e hora de término deve ser posterior à de início.',
+        confirmButtonColor: '#f97316',
+      });
+      return;
+    }
+
+    // Validação: capacidade mínima deve ser 1
+    if (max_capacity < 1) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Erro de capacidade',
+        text: 'A capacidade máxima deve ser, no mínimo, 1.',
+        confirmButtonColor: '#f97316',
+      });
+      return;
+    }
+
     const formData: EventFormData = {
       title,
       description,
@@ -42,6 +92,7 @@ const ModalForm: React.FC<ModalFormProps> = ({ isOpen, onClose, onSubmit }) => {
       max_capacity,
       status,
     };
+
     setLoading(true);
     try {
       await onSubmit(formData);
@@ -59,7 +110,9 @@ const ModalForm: React.FC<ModalFormProps> = ({ isOpen, onClose, onSubmit }) => {
       <div className="fixed inset-0 flex items-center justify-center bg-transparent backdrop-blur-sm z-50">
         <div className="bg-orange-500 rounded-lg shadow-lg w-full max-w-lg p-6">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-bold text-white">Criar Evento</h2>
+            <h2 className="text-xl font-bold text-white">
+              {initialData ? 'Editar Evento' : 'Criar Evento'}
+            </h2>
             <button onClick={onClose} className="text-white hover:text-gray-200 text-2xl leading-none">
               &times;
             </button>
@@ -108,8 +161,12 @@ const ModalForm: React.FC<ModalFormProps> = ({ isOpen, onClose, onSubmit }) => {
               label="Capacidade Máxima"
               type="number"
               value={max_capacity}
-              onChange={(e) => setMax_capacity(parseInt(e.target.value))}
+              onChange={(e) => {
+                const value = parseInt(e.target.value) || 1;
+                setMax_capacity(value < 1 ? 1 : value);
+              }}
               required
+              // Caso o InputField aceite props extras, pode ser passado min={1}
             />
             <SelectField
               label="Status"
@@ -129,7 +186,7 @@ const ModalForm: React.FC<ModalFormProps> = ({ isOpen, onClose, onSubmit }) => {
                 hoverBgColor="hover:bg-gray-200"
                 className="text-orange-500"
               >
-                Criar
+                Salvar
               </Button>
             </div>
           </form>

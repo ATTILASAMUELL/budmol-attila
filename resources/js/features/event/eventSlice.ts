@@ -30,6 +30,7 @@ export const createEventThunk = createAsyncThunk(
   }
 );
 
+// Ajuste na thunk de atualização para retornar data corretamente
 export const updateEventThunk = createAsyncThunk(
   'event/update',
   async (
@@ -42,7 +43,8 @@ export const updateEventThunk = createAsyncThunk(
       if (!success) {
         return rejectWithValue(message || 'Erro ao atualizar evento');
       }
-      return data.event;
+      // Retorna o objeto do evento conforme retornado pelo back-end (data é o objeto do evento)
+      return data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Erro ao atualizar evento');
     }
