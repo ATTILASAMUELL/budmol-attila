@@ -3,7 +3,7 @@ import { useAppSelector, useAppDispatch } from '../hooks/hooks';
 import { Role } from '../enums/Role';
 import { Event } from '../models/Event';
 import { createEventRegistrationThunk } from '../features/event/eventRegistrationSlice';
-import { updateEventThunk } from '../features/event/eventSlice'; // Importa a thunk de atualização
+import { updateEventThunk, deleteEventThunk } from '../features/event/eventSlice'; // Importa a thunk de atualização e exclusão
 import Swal from 'sweetalert2';
 import ModalForm, { EventFormData } from './ModalForm';
 
@@ -71,6 +71,35 @@ const Card: React.FC<CardProps> = ({ event }) => {
     }
   };
 
+  const handleDelete = async () => {
+    const confirmResult = await Swal.fire({
+      title: 'Excluir evento',
+      text: 'Tem certeza de que deseja excluir este evento?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sim, excluir',
+      cancelButtonText: 'Cancelar',
+    });
+
+    if (confirmResult.isConfirmed) {
+      try {
+        await dispatch(deleteEventThunk(String(event.id))).unwrap();
+        Swal.fire({
+          icon: 'success',
+          title: 'Evento excluído com sucesso',
+          confirmButtonColor: '#f97316',
+        });
+      } catch (error: any) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Erro ao excluir evento',
+          text: error || 'Não foi possível excluir o evento.',
+          confirmButtonColor: '#f97316',
+        });
+      }
+    }
+  };
+
   return (
     <>
       <div className="bg-white border border-orange-500 rounded-lg shadow p-3 w-full max-w-xs">
@@ -114,12 +143,20 @@ const Card: React.FC<CardProps> = ({ event }) => {
         </p>
 
         {user?.role === Role.ADMINISTRADOR ? (
-          <button
-            className="bg-orange-500 text-white py-1 px-3 rounded hover:bg-orange-600 transition-colors text-sm"
-            onClick={() => setIsEditModalOpen(true)}
-          >
-            Edição
-          </button>
+          <div className="flex gap-2">
+            <button
+              className="bg-orange-500 text-white py-1 px-3 rounded hover:bg-orange-600 transition-colors text-sm"
+              onClick={() => setIsEditModalOpen(true)}
+            >
+              Edição
+            </button>
+            <button
+              className="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-600 transition-colors text-sm"
+              onClick={handleDelete}
+            >
+              Excluir
+            </button>
+          </div>
         ) : isRegistered ? (
           <span className="bg-green-500 text-white py-1 px-3 rounded text-sm">
             Já Inscrito
@@ -134,7 +171,7 @@ const Card: React.FC<CardProps> = ({ event }) => {
         ) : null}
       </div>
 
-      {/* Renderização da Modal para Edição */}
+      {/* Modal para Edição */}
       <ModalForm
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}

@@ -6,7 +6,6 @@ use App\Models\Event;
 
 class EventRepository
 {
-
     public function getAll()
     {
         return Event::all();
@@ -27,5 +26,11 @@ class EventRepository
         $event = $this->find($id);
         $event->update($data);
         return $event;
+    }
+
+    public function destroy(int $id): bool
+    {
+        $event = $this->find($id);
+        return $event->delete();
     }
 }

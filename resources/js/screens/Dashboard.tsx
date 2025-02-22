@@ -54,7 +54,7 @@ const Dashboard: React.FC = () => {
       </div>
       {error && <p className="text-red-500 mb-4">{error}</p>}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-8 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-4">
         {/* Filtra itens indefinidos, se houver */}
         {events
           .filter((event) => event)

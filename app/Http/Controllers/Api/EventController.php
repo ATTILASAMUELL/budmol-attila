@@ -83,4 +83,19 @@ class EventController extends Controller
             return $this->errorResponse('An error occurred', 500);
         }
     }
+
+    public function destroy($id): JsonResponse
+    {
+        try {
+            $event = $this->eventService->find($id);
+            Gate::authorize('delete', $event);
+            $this->eventService->destroy($id);
+            return $this->successResponse(
+                null,
+                'Event deleted successfully'
+            );
+        } catch (\Exception $e) {
+            return $this->errorResponse('An error occurred', 500);
+        }
+    }
 }

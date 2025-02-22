@@ -34,4 +34,9 @@ class EventService
     {
         return $this->eventRepository->update($id, $data);
     }
+
+    public function destroy(int $id): bool
+    {
+        return $this->eventRepository->destroy($id);
+    }
 }
