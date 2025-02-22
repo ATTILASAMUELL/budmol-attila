@@ -1,0 +1,789 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "Budmol",
+        "version": "0.0.1"
+    },
+    "servers": [
+        {
+            "url": "http:\/\/localhost\/api"
+        }
+    ],
+    "paths": {
+        "\/v1\/events": {
+            "get": {
+                "operationId": "events.index",
+                "description": "Retorna uma cole\u00e7\u00e3o de eventos com seus respectivos dados.",
+                "summary": "Lista todos os eventos",
+                "tags": [
+                    "Event"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#\/components\/responses\/AuthenticationException"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "events.store",
+                "description": "Cria um evento a partir dos dados informados na requisi\u00e7\u00e3o.",
+                "summary": "Cria um novo evento",
+                "tags": [
+                    "Event"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application\/json": {
+                            "schema": {
+                                "$ref": "#\/components\/schemas\/StoreEventRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#\/components\/responses\/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#\/components\/responses\/ValidationException"
+                    }
+                }
+            }
+        },
+        "\/v1\/events\/{id}": {
+            "get": {
+                "operationId": "events.show",
+                "description": "Retorna os dados do evento identificado pelo ID.",
+                "summary": "Exibe os detalhes de um evento espec\u00edfico",
+                "tags": [
+                    "Event"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "description": "ID do evento.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#\/components\/responses\/AuthenticationException"
+                    }
+                }
+            },
+            "put": {
+                "operationId": "events.update",
+                "description": "Atualiza um evento com base nos dados enviados e no ID informado.",
+                "summary": "Atualiza os dados de um evento existente",
+                "tags": [
+                    "Event"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "description": "ID do evento a ser atualizado.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application\/json": {
+                            "schema": {
+                                "$ref": "#\/components\/schemas\/UpdateEventRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#\/components\/responses\/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#\/components\/responses\/ValidationException"
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "events.destroy",
+                "description": "Deleta um evento com base no ID informado.",
+                "summary": "Remove um evento",
+                "tags": [
+                    "Event"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "description": "ID do evento a ser removido.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#\/components\/responses\/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "\/v1\/event-registrations": {
+            "get": {
+                "operationId": "event-registrations.index",
+                "description": "Retorna uma cole\u00e7\u00e3o de inscri\u00e7\u00f5es com seus respectivos dados.",
+                "summary": "Lista todas as inscri\u00e7\u00f5es de eventos",
+                "tags": [
+                    "EventRegistration"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#\/components\/responses\/AuthenticationException"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "event-registrations.store",
+                "description": "Cria uma inscri\u00e7\u00e3o a partir dos dados informados na requisi\u00e7\u00e3o.",
+                "summary": "Cria uma nova inscri\u00e7\u00e3o em evento",
+                "tags": [
+                    "EventRegistration"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application\/json": {
+                            "schema": {
+                                "$ref": "#\/components\/schemas\/StoreEventRegistrationRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#\/components\/responses\/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#\/components\/responses\/ValidationException"
+                    },
+                    "403": {
+                        "$ref": "#\/components\/responses\/AuthorizationException"
+                    }
+                }
+            }
+        },
+        "\/v1\/event-registrations\/{id}": {
+            "get": {
+                "operationId": "event-registrations.show",
+                "description": "Retorna os dados da inscri\u00e7\u00e3o identificada pelo ID.",
+                "summary": "Exibe os detalhes de uma inscri\u00e7\u00e3o em evento espec\u00edfica",
+                "tags": [
+                    "EventRegistration"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "description": "ID da inscri\u00e7\u00e3o.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#\/components\/responses\/AuthenticationException"
+                    }
+                }
+            },
+            "put": {
+                "operationId": "event-registrations.update",
+                "description": "Atualiza uma inscri\u00e7\u00e3o com base nos dados enviados e no ID informado.",
+                "summary": "Atualiza os dados de uma inscri\u00e7\u00e3o em evento existente",
+                "tags": [
+                    "EventRegistration"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "description": "ID da inscri\u00e7\u00e3o a ser atualizada.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application\/json": {
+                            "schema": {
+                                "$ref": "#\/components\/schemas\/UpdateEventRegistrationRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#\/components\/responses\/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#\/components\/responses\/ValidationException"
+                    },
+                    "403": {
+                        "$ref": "#\/components\/responses\/AuthorizationException"
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "event-registrations.destroy",
+                "description": "Deleta uma inscri\u00e7\u00e3o com base no ID informado.",
+                "summary": "Remove uma inscri\u00e7\u00e3o em evento",
+                "tags": [
+                    "EventRegistration"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "description": "ID da inscri\u00e7\u00e3o a ser removida.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#\/components\/responses\/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "\/v1\/auth\/register": {
+            "post": {
+                "operationId": "userAuth.register",
+                "description": "Cria um novo usu\u00e1rio e gera um token de autentica\u00e7\u00e3o.",
+                "summary": "Registra um novo usu\u00e1rio",
+                "tags": [
+                    "UserAuth"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application\/json": {
+                            "schema": {
+                                "$ref": "#\/components\/schemas\/RegisterRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#\/components\/responses\/ValidationException"
+                    },
+                    "403": {
+                        "$ref": "#\/components\/responses\/AuthorizationException"
+                    }
+                }
+            }
+        },
+        "\/v1\/auth\/login": {
+            "post": {
+                "operationId": "userAuth.login",
+                "description": "Valida as credenciais e retorna o usu\u00e1rio autenticado com o token.",
+                "summary": "Realiza o login do usu\u00e1rio",
+                "tags": [
+                    "UserAuth"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application\/json": {
+                            "schema": {
+                                "$ref": "#\/components\/schemas\/LoginRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#\/components\/responses\/ValidationException"
+                    },
+                    "403": {
+                        "$ref": "#\/components\/responses\/AuthorizationException"
+                    }
+                }
+            }
+        },
+        "\/v1\/auth\/forgot-password": {
+            "post": {
+                "operationId": "userAuth.forgotPassword",
+                "description": "Envia uma senha tempor\u00e1ria para o e-mail do usu\u00e1rio, caso o mesmo seja encontrado.",
+                "summary": "Solicita a recupera\u00e7\u00e3o de senha",
+                "tags": [
+                    "UserAuth"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application\/json": {
+                            "schema": {
+                                "$ref": "#\/components\/schemas\/ForgotPasswordRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#\/components\/responses\/ValidationException"
+                    }
+                }
+            }
+        },
+        "\/v1\/auth\/logout": {
+            "post": {
+                "operationId": "userAuth.logout",
+                "description": "Revoga o token de acesso do usu\u00e1rio.",
+                "summary": "Realiza o logout do usu\u00e1rio autenticado",
+                "tags": [
+                    "UserAuth"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#\/components\/responses\/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "\/v1\/auth\/refresh-token": {
+            "post": {
+                "operationId": "userAuth.refresh",
+                "description": "Gera um novo token para o usu\u00e1rio autenticado.",
+                "summary": "Atualiza (refresca) o token de autentica\u00e7\u00e3o do usu\u00e1rio",
+                "tags": [
+                    "UserAuth"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#\/components\/responses\/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "\/v1\/users-with-events": {
+            "get": {
+                "operationId": "userEvent.index",
+                "description": "Retorna uma cole\u00e7\u00e3o de usu\u00e1rios que possuem eventos vinculados, utilizando o recurso UserResource.",
+                "summary": "Lista todos os usu\u00e1rios com eventos associados",
+                "tags": [
+                    "UserEvent"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#\/components\/responses\/AuthenticationException"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "EventStatus": {
+                "type": "string",
+                "enum": [
+                    "open",
+                    "closed",
+                    "canceled"
+                ],
+                "title": "EventStatus"
+            },
+            "ForgotPasswordRequest": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    }
+                },
+                "required": [
+                    "email"
+                ],
+                "title": "ForgotPasswordRequest"
+            },
+            "LoginRequest": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "password": {
+                        "type": "string",
+                        "minLength": 6
+                    }
+                },
+                "required": [
+                    "email",
+                    "password"
+                ],
+                "title": "LoginRequest"
+            },
+            "RegisterRequest": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "password": {
+                        "type": "string",
+                        "minLength": 6
+                    },
+                    "password_confirmation": {
+                        "type": "string",
+                        "minLength": 6
+                    }
+                },
+                "required": [
+                    "name",
+                    "email",
+                    "password",
+                    "password_confirmation"
+                ],
+                "title": "RegisterRequest"
+            },
+            "StoreEventRegistrationRequest": {
+                "type": "object",
+                "properties": {
+                    "event_id": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "event_id"
+                ],
+                "title": "StoreEventRegistrationRequest"
+            },
+            "StoreEventRequest": {
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "start_time": {
+                        "type": "string"
+                    },
+                    "end_time": {
+                        "type": "string"
+                    },
+                    "location": {
+                        "type": "string"
+                    },
+                    "max_capacity": {
+                        "type": "integer",
+                        "minimum": 1
+                    },
+                    "status": {
+                        "$ref": "#\/components\/schemas\/EventStatus"
+                    }
+                },
+                "required": [
+                    "title",
+                    "description",
+                    "start_time",
+                    "end_time",
+                    "location",
+                    "max_capacity"
+                ],
+                "title": "StoreEventRequest"
+            },
+            "UpdateEventRegistrationRequest": {
+                "type": "object",
+                "properties": {
+                    "event_id": {
+                        "type": "integer"
+                    }
+                },
+                "title": "UpdateEventRegistrationRequest"
+            },
+            "UpdateEventRequest": {
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "start_time": {
+                        "type": "string"
+                    },
+                    "end_time": {
+                        "type": "string"
+                    },
+                    "location": {
+                        "type": "string"
+                    },
+                    "max_capacity": {
+                        "type": "integer",
+                        "minimum": 1
+                    },
+                    "status": {
+                        "$ref": "#\/components\/schemas\/EventStatus"
+                    }
+                },
+                "title": "UpdateEventRequest"
+            }
+        },
+        "responses": {
+            "ValidationException": {
+                "description": "Validation error",
+                "content": {
+                    "application\/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "description": "Errors overview."
+                                },
+                                "errors": {
+                                    "type": "object",
+                                    "description": "A detailed description of each field that failed validation.",
+                                    "additionalProperties": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            },
+                            "required": [
+                                "message",
+                                "errors"
+                            ]
+                        }
+                    }
+                }
+            },
+            "AuthorizationException": {
+                "description": "Authorization error",
+                "content": {
+                    "application\/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "description": "Error overview."
+                                }
+                            },
+                            "required": [
+                                "message"
+                            ]
+                        }
+                    }
+                }
+            },
+            "AuthenticationException": {
+                "description": "Unauthenticated",
+                "content": {
+                    "application\/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "description": "Error overview."
+                                }
+                            },
+                            "required": [
+                                "message"
+                            ]
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

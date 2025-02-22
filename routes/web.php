@@ -8,4 +8,4 @@ Route::get('/email/verify/{id}', [EmailVerificationController::class, 'verify'])
 
 Route::get('/{any?}', function () {
     return view('master');
-})->where('any', '.*');
+})->where('any', '^(?!docs).*');

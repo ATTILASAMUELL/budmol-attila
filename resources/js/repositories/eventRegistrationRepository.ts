@@ -3,7 +3,7 @@ import { RoutesApi } from './routes';
 import { EventRegistration } from '../models/EventRegistration';
 
 export const eventRegistrationRepository = {
-  create: async (data: {event_id: string }): Promise<{
+  create: async (data: {event_id: number|undefined }): Promise<{
     success: boolean;
     message?: string;
     data?: { registration: EventRegistration };

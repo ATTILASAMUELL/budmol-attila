@@ -16,12 +16,10 @@ interface ModalFormProps {
 }
 
 const ModalForm: React.FC<ModalFormProps> = ({ isOpen, onClose, onSubmit, initialData }) => {
-  // Inicializa a capacidade com 1 se não houver valor inicial ou se for menor que 1
   const initialCapacity = initialData && initialData.max_capacity > 0 ? initialData.max_capacity : 1;
 
   const [title, setTitle] = useState(initialData?.title || '');
   const [description, setDescription] = useState(initialData?.description || '');
-  // Os inputs datetime-local precisam do formato "YYYY-MM-DDTHH:mm"
   const [start_time, setStart_time] = useState('');
   const [end_time, setEnd_time] = useState('');
   const [location, setLocation] = useState(initialData?.location || '');
@@ -29,14 +27,11 @@ const ModalForm: React.FC<ModalFormProps> = ({ isOpen, onClose, onSubmit, initia
   const [status, setStatus] = useState<EventStatus>(initialData?.status || EventStatus.OPEN);
   const [loading, setLoading] = useState(false);
 
-  // Função para converter "YYYY-MM-DD HH:mm:ss" para "YYYY-MM-DDTHH:mm"
   const convertToInputFormat = (datetime: string) => {
     if (!datetime) return '';
-    // Exemplo: "2025-02-22 15:30:00" -> "2025-02-22T15:30"
     return datetime.replace(' ', 'T').slice(0, 16);
   };
 
-  // Quando houver dados iniciais, converte os campos de data para o formato do input
   useEffect(() => {
     if (initialData) {
       setTitle(initialData.title);
@@ -49,10 +44,8 @@ const ModalForm: React.FC<ModalFormProps> = ({ isOpen, onClose, onSubmit, initia
     }
   }, [initialData]);
 
-  // Função para formatar o valor do input para "YYYY-MM-DD HH:mm:ss"
   const formatDatetime = (datetime: string) => {
     if (!datetime) return '';
-    // Transforma "YYYY-MM-DDTHH:mm" em "YYYY-MM-DD HH:mm:00"
     return datetime.replace('T', ' ') + ':00';
   };
 
@@ -61,7 +54,6 @@ const ModalForm: React.FC<ModalFormProps> = ({ isOpen, onClose, onSubmit, initia
     const formattedStart = formatDatetime(start_time);
     const formattedEnd = formatDatetime(end_time);
 
-    // Validação: end_time deve ser posterior a start_time
     if (new Date(formattedEnd) <= new Date(formattedStart)) {
       Swal.fire({
         icon: 'error',
@@ -71,8 +63,6 @@ const ModalForm: React.FC<ModalFormProps> = ({ isOpen, onClose, onSubmit, initia
       });
       return;
     }
-
-    // Validação: capacidade mínima deve ser 1
     if (max_capacity < 1) {
       Swal.fire({
         icon: 'error',
@@ -84,14 +74,17 @@ const ModalForm: React.FC<ModalFormProps> = ({ isOpen, onClose, onSubmit, initia
     }
 
     const formData: EventFormData = {
-      title,
-      description,
-      start_time: formattedStart,
-      end_time: formattedEnd,
-      location,
-      max_capacity,
-      status,
+        title,
+        description,
+        start_time: formattedStart,
+        end_time: formattedEnd,
+        location,
+        max_capacity,
+        status,
+        image: '',
+        registered: false
     };
+
 
     setLoading(true);
     try {

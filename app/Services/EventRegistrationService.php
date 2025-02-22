@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Repositories\EventRegistrationRepository;
 use App\Models\EventRegistration;
 use Illuminate\Database\Eloquent\Collection;
+use App\Notifications\EventRegistrationNotification;
 
 class EventRegistrationService
 {
@@ -22,7 +23,13 @@ class EventRegistrationService
 
     public function create(array $data): EventRegistration
     {
-        return $this->eventRegistrationRepository->create($data);
+        $registration = $this->eventRegistrationRepository->create($data);
+
+        if (isset($registration->user)) {
+            $registration->user->notify(new EventRegistrationNotification($registration));
+        }
+
+        return $registration;
     }
 
     public function find(int $id): EventRegistration

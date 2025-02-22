@@ -1,66 +1,107 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
 
-## About Laravel
+### Hi there, My name is ATTILA  SAMUELL TABORY, I love technology 👋
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+[![LinkedIn ](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/attila-samuell-98291216b/)
+[![You Tube](https://img.shields.io/badge/YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/channel/UCuX9fZZa3eR4LACYTPVZg5A/videos)
+[![Play Store](https://img.shields.io/badge/Google_Play-414141?style=for-the-badge&logo=google-play&logoColor=white)](https://play.google.com/store/apps/details?id=attila.QRCodeGeradorLeitor)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
-## Learning Laravel
+# SPA e API BUDMOL.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Esta é a SPA e API BUDMOL, desenvolvida por **Attila Samuell Nunes Tabory** com **PHP 8.1.2** e **Laravel 10**. Este projeto fornece endpoints para criação, gerencialmento,inscrição de eventos e autenticação de usuários. Ele utiliza uma arquitetura limpa, separando responsabilidades em controladores, solicitações, recursos, serviços e repositórios.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### Tecnologias e Ferramentas Utilizadas
+- **Back-end**: PHP 8.1.2, Laravel 10
+- **Autenticação**: Laravel Sanctum para autenticação baseada em tokens
+- **Front End**: React JS com Typescript e Redux.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Requisitos
+- **Composer e PHP**
+- **Servidor de desenvolvimento**: Xampp ou Wampp
+- **node**: Node
 
-## Laravel Sponsors
+## Arquitetura e Organização do Projeto
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### Estrutura de Diretórios
+- **app/Http/Controllers**: Contém os controladores principais, como `UserAuthController`, que lidam com autenticação e manipulação de produtos, respectivamente.
+- **app/Http/Requests**: Inclui as classes de validação para as requisições de API, garantindo que os dados fornecidos pelos usuários sejam válidos antes de serem processados. Exemplo de requests: `LoginRequest`.
+- **app/Http/Resources**: Define os recursos para formatar as respostas de API, como  `UserResource`.
+- **app/Repositories**: Implementa a lógica de acesso aos dados, como , que realiza operações específicas de persistência de dados.
+- **app/Services**: Camada de serviço que abstrai a lógica de negócios, incluindo `UserAuthService` para autenticação e  para funcionalidades relacionadas ao produto.
 
-### Premium Partners
+### Padrões de Design Utilizados
+- **Repository Pattern**: Utilizado para abstrair a lógica de acesso aos dados. Por exemplo, o  é responsável pela comunicação com o banco de dados para operações relacionadas aos produtos, mantendo o código da aplicação desacoplado da lógica de persistência de dados.
+- **Service Pattern**: Utilizado para encapsular a lógica de negócios em classes de serviço, como `UserAuthService`. Esses serviços centralizam as operações complexas, tornando o código mais organizado e testável.
+- **Dependency Injection**: Utilizado para injetar dependências (por exemplo, `UserAuthService` ) nas classes através do contêiner de serviços do Laravel, promovendo o baixo acoplamento e facilitando a manutenção.
+- **Singleton Pattern**: Aplicado na classe `UserAuthService`, garantindo que exista apenas uma instância desse serviço em todo o ciclo de vida da aplicação.
+- **Controller-Service-Repository Pattern**: Esse padrão ajuda a manter a separação de responsabilidades ao longo da aplicação. O controlador recebe a solicitação, o serviço processa a lógica de negócios e o repositório lida com o acesso aos dados.
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+### Principais Endpoints
 
-## Contributing
+### Configuração Inicial Do Back End
+Para instalar o projeto, siga os passos abaixo:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+1. **Clonar o repositório** e criar o arquivo `.env`:
+```bash
+   cp .env.example .env
+```
 
-## Code of Conduct
+2. **Instalar as dependências**:
+```bash
+   composer install
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+3. **Gerar a chave de aplicação**:
+   ```bash
+   php artisan key:generate
+   ```
 
-## Security Vulnerabilities
+4. **Executar as migrações**:
+Lembre-se de criar database em algum client Mysql.
+```bash
+php artisan migrate
+```
+5. **Subir Servidor localmente**:
+```bash
+php artisan serve
+```
+### Documentação da API
+Para documentação da API, o projeto utiliza **Scramble**, uma ferramenta que gera automaticamente documentação detalhada dos endpoints. A documentação é gerada a partir dos comentários e tipos de retorno definidos nos controladores e está disponível para consulta no ambiente local. Isso permite que desenvolvedores tenham uma visão clara dos endpoints disponíveis e suas respectivas requisições e respostas. Para acessar a documentação 'url/docs/api'
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+![alt text](image-2.png)
 
-## License
+Para EXPORTAR documentação, utilize o comando:
+```bash
+php artisan scramble:export
+```
+### Configuração Inicial Do FRONT END
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Para instalar as dependencias :
+```bash
+npm install
+```
+
+Para rodar a aplicação front end :
+```bash
+npm run dev
+```
+
+### Cobertura Dos Testes
+Os testes utilizados são considerados Feature Tests no Laravel, que na prática são testes de integração, pois eles simulam requisições HTTP aos endpoints da sua aplicação, envolvem a autenticação, interagem com o banco de dados e testam a integração entre diferentes camadas da aplicação.
+```bash
+vendor/bin/phpunit --filter EventControllerTest
+```
+```bash
+vendor/bin/phpunit --filter UserAuthControllerTest
+```
+![alt text](image-1.png)
+![alt text](image.png)
+
+### Email notificação de inscrição evento
+![alt text](image-3.png)
+
+### Email de verificação do email
+![alt text](image-4.png)
+![alt text](image-5.png)

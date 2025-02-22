@@ -171,19 +171,20 @@ const Card: React.FC<CardProps> = ({ event }) => {
         ) : null}
       </div>
 
-      {/* Modal para Edição */}
       <ModalForm
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
         onSubmit={handleEditSubmit}
         initialData={{
-          title: event.title,
-          description: event.description,
-          start_time: event.start_time,
-          end_time: event.end_time,
-          location: event.location,
-          max_capacity: event.max_capacity,
-          status: event.status,
+            title: event.title,
+            description: event.description,
+            start_time: event.start_time,
+            end_time: event.end_time,
+            location: event.location,
+            max_capacity: event.max_capacity,
+            status: event.status,
+            image: '',
+            registered: false
         }}
       />
     </>

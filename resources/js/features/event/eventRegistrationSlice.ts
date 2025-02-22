@@ -14,14 +14,13 @@ const initialState: EventRegistrationState = {
   error: null,
 };
 
-// Exportação direta na declaração
 export const createEventRegistrationThunk = createAsyncThunk(
   'eventRegistration/create',
-  async (registrationData: { event_id: string }, { rejectWithValue }) => {
+  async (registrationData: { event_id: number|undefined }, { rejectWithValue }) => {
     try {
       const response = await eventRegistrationRepository.create(registrationData);
       const { success, message, data } = response;
-      if (!success) {
+      if (!success || !data) {
         return rejectWithValue(message || 'Erro ao se inscrever no evento');
       }
       return data.registration;

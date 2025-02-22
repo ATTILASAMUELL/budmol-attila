@@ -33,7 +33,7 @@ export const createEventThunk = createAsyncThunk(
 export const updateEventThunk = createAsyncThunk(
   'event/update',
   async (
-    { eventId, eventData }: { eventId: number; eventData: Partial<Event> },
+    { eventId, eventData }: { eventId: number|undefined; eventData: Partial<Event> },
     { rejectWithValue }
   ) => {
     try {
@@ -67,7 +67,7 @@ export const listEventsThunk = createAsyncThunk(
 
 export const deleteEventThunk = createAsyncThunk(
   'event/delete',
-  async (eventId: number, { rejectWithValue }) => {
+  async (eventId: number|undefined, { rejectWithValue }) => {
     try {
       const response = await eventRepository.delete(eventId);
       const { success, message } = response;
@@ -87,7 +87,6 @@ const eventSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      // Create
       .addCase(createEventThunk.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -102,7 +101,6 @@ const eventSlice = createSlice({
         state.error = action.payload as string;
       })
 
-      // Update
       .addCase(updateEventThunk.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -119,7 +117,6 @@ const eventSlice = createSlice({
         state.error = action.payload as string;
       })
 
-      // List
       .addCase(listEventsThunk.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -134,16 +131,18 @@ const eventSlice = createSlice({
         state.error = action.payload as string;
       })
 
-      // Delete
       .addCase(deleteEventThunk.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(deleteEventThunk.fulfilled, (state, action: PayloadAction<number>) => {
+      .addCase(deleteEventThunk.fulfilled, (state, action: PayloadAction<number | undefined>) => {
         state.loading = false;
-        state.events = state.events.filter((event) => event.id !== action.payload);
+        if (action.payload !== undefined) {
+          state.events = state.events.filter((event) => event.id !== action.payload);
+        }
         state.error = null;
       })
+
       .addCase(deleteEventThunk.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;

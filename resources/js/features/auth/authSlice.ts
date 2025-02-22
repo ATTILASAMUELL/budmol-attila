@@ -1,24 +1,10 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { authRepository } from '../../repositories/authRepository';
 import { Role } from '../../enums/Role';
-
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-  role: Role | string;
-  accessToken: string;
-  refreshToken: string;
-}
-
-interface AuthState {
-  user: User | null;
-  isLoggedIn: boolean;
-  loading: boolean;
-  error: string | null;
-}
+import {User,AuthState} from '../../models/User'
 
 const storedUser = localStorage.getItem('user');
+
 const initialState: AuthState = {
   user: storedUser ? JSON.parse(storedUser) : null,
   isLoggedIn: storedUser ? true : false,
