@@ -19,9 +19,6 @@ const Sidebar: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const { user } = useAppSelector((state) => state.auth);
 
-  const subscriptionsText =
-    user?.role === Role.ADMINISTRADOR ? 'Clientes' : 'Minhas Inscrições';
-
   const handleLogout = () => {
     setLoading(true);
     dispatch(logoutThunk())
@@ -66,19 +63,7 @@ const Sidebar: React.FC = () => {
                   Overview
                 </NavLink>
               </li>
-              <li>
-                <NavLink
-                  to="/subscriptions"
-                  className={({ isActive }) =>
-                    `flex items-center px-4 py-2 text-sm rounded-md hover:bg-orange-600 hover:text-white ${
-                      isActive ? 'bg-orange-600 text-white font-medium' : 'text-white'
-                    }`
-                  }
-                >
-                  <BookOpenIcon className="h-5 w-5 mr-3" />
-                  {subscriptionsText}
-                </NavLink>
-              </li>
+
             </ul>
             <p className="text-xs font-semibold text-orange-200 mt-6 mb-2">OUTROS:</p>
             <ul className="space-y-1">

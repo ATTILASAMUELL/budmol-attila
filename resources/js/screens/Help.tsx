@@ -7,7 +7,6 @@ const Help: React.FC = () => {
       <div className="min-h-screen bg-gray-50 p-8">
         <div className="max-w-4xl mx-auto bg-white border border-orange-500 rounded-lg shadow p-6">
           <div className="flex flex-col md:flex-row">
-            {/* Lado Esquerdo - Card de Perguntas Frequentes */}
             <div className="w-full md:w-1/2 p-4">
               <h2 className="text-2xl font-bold text-gray-800 mb-4">
                 Perguntas Frequentes
@@ -39,10 +38,9 @@ const Help: React.FC = () => {
                 </div>
               </div>
             </div>
-            {/* Lado Direito - Foto do CEO Attila Samuell */}
             <div className="w-full md:w-1/2 p-4 flex flex-col items-center">
               <img
-                src="http://127.0.0.1:8000/ceo-attila.jpg" // Atualize o caminho conforme necessário
+                src="http://127.0.0.1:8000/ceo-attila.jpg"
                 alt="CEO Attila Samuell"
                 className="w-64 h-64 object-cover rounded-full border border-orange-500"
               />
