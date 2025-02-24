@@ -25,14 +25,14 @@ Esta é a SPA e API BUDMOL, desenvolvida por **Attila Samuell Nunes Tabory** com
 ## Arquitetura e Organização do Projeto
 
 ### Estrutura de Diretórios
-- **app/Http/Controllers**: Contém os controladores principais, como `UserAuthController`, que lidam com autenticação e manipulação de produtos, respectivamente.
+- **app/Http/Controllers**: Contém os controladores principais, como `UserAuthController`, que lidam com autenticação, respectivamente.
 - **app/Http/Requests**: Inclui as classes de validação para as requisições de API, garantindo que os dados fornecidos pelos usuários sejam válidos antes de serem processados. Exemplo de requests: `LoginRequest`.
 - **app/Http/Resources**: Define os recursos para formatar as respostas de API, como  `UserResource`.
 - **app/Repositories**: Implementa a lógica de acesso aos dados, como , que realiza operações específicas de persistência de dados.
 - **app/Services**: Camada de serviço que abstrai a lógica de negócios, incluindo `UserAuthService` para autenticação e  para funcionalidades relacionadas ao produto.
 
 ### Padrões de Design Utilizados
-- **Repository Pattern**: Utilizado para abstrair a lógica de acesso aos dados. Por exemplo, o  é responsável pela comunicação com o banco de dados para operações relacionadas aos produtos, mantendo o código da aplicação desacoplado da lógica de persistência de dados.
+- **Repository Pattern**: Utilizado para abstrair a lógica de acesso aos dados. Por exemplo, o  é responsável pela comunicação com o banco de dados para operações relacionadas aos usuarios,eventos,inscrições, mantendo o código da aplicação desacoplado da lógica de persistência de dados.
 - **Service Pattern**: Utilizado para encapsular a lógica de negócios em classes de serviço, como `UserAuthService`. Esses serviços centralizam as operações complexas, tornando o código mais organizado e testável.
 - **Dependency Injection**: Utilizado para injetar dependências (por exemplo, `UserAuthService` ) nas classes através do contêiner de serviços do Laravel, promovendo o baixo acoplamento e facilitando a manutenção.
 - **Singleton Pattern**: Aplicado na classe `UserAuthService`, garantindo que exista apenas uma instância desse serviço em todo o ciclo de vida da aplicação.
